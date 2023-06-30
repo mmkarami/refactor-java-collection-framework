@@ -87,4 +87,6 @@ public interface Collection<E> extends Iterable<E> {
 			iterator.remove();
 		}
 	}
+	
+	public Object[] toArray();
 }

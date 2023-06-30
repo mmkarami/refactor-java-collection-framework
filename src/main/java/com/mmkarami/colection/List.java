@@ -1,5 +1,7 @@
 package com.mmkarami.colection;
 
+import java.util.Arrays;
+
 public interface List<E> extends Collection<E>, ListIterable<E> {
 
 	default public void add(int index, E element) {
@@ -11,9 +13,9 @@ public interface List<E> extends Collection<E>, ListIterable<E> {
 		return true;
 	}
 
-	public E get();
+	public E get(int index);
 
-	public E set(int idex, E element);
+	public E set(int index, E element);
 
 	default public int indexOf(E e) {
 		ListIterator<E> iterator = listIterator();
@@ -72,5 +74,35 @@ public interface List<E> extends Collection<E>, ListIterable<E> {
 			modified = true;
 		}
 		return modified;
+	}
+
+	default public Object[] toArray() {
+		Object[] newArray = new Object[size()];
+		Iterator<E> it = iterator();
+		for (int i = 0; i < newArray.length; i++) {
+			if (!it.hasNext()) {// fewer elements than expected
+				Object[] trimedArray = Arrays.copyOf(newArray, i);
+				return trimedArray;
+			}
+			newArray[i] = it.next();
+		}
+		return it.hasNext() ? finishToArray(newArray, it) : newArray;
+	}
+
+	private Object[] finishToArray(Object[] r, Iterator<?> it) {
+		int len = r.length;
+		int i = len;
+		while (it.hasNext()) {
+			if (i == len) {
+				/*
+				 * len = ArraysSupport.newLength(len, 1, minimum growth (len >> 1) + 1 preferred
+				 * growth );
+				 */
+				r = Arrays.copyOf(r, len);
+			}
+			r[i++] = (Object) it.next();
+		}
+		// trim if overallocated
+		return (i == len) ? r : Arrays.copyOf(r, i);
 	}
 }
