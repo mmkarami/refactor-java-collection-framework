@@ -1,4 +1,4 @@
-package com.mmkarami.colection;
+package com.mmkarami.collection;
 
 import java.util.Arrays;
 
